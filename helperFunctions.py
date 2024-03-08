@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 def compareFirstTen (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
     def areSame(a, b) :
         return (a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1])
@@ -11,6 +11,16 @@ def compareFirstTen (indexes, distances, trueIndexes, trueDistances, epsilon = 1
             print(str(distances[i][j]) + " || " + str(trueDistances[i][j]))
         break
 
+def compareElems (num, indexes, distances, trueIndexes, trueDistances, epsilon = 1):
+    def areSame(a, b) :
+        return (a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1])
+    if (not areSame(indexes, trueIndexes)):
+        return
+    for i in range(indexes.shape[0]) :
+        for j in range(num) :
+            print(str(indexes[i][j]) + " || " + str(trueIndexes[i][j]))
+            print(str(distances[i][j]) + " || " + str(trueDistances[i][j]))
+        break
 
 def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
     def areSame(a, b) :
@@ -50,7 +60,7 @@ def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilo
     print(sum)
 
 def draw_mnist(indexes, distances, datasetImages):
-    arr = np.empty([0,784])
+    arr = np.empty([0,datasetImages.shape[1]])
     for i in range(10):
         print('index : ', indexes[0][i], '\ndistance : ', distances[0][i])
         arr = np.vstack((arr, datasetImages[indexes[0][i]]))
