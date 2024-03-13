@@ -1,6 +1,7 @@
 from annoy import AnnoyIndex
 from time import perf_counter
 import numpy as np
+import os
 
 def annoy_run (name) :
     print("Annoy start ----------------------------------------------")
@@ -56,7 +57,8 @@ def annoy_run (name) :
     print('indexes : ', indexes.shape)
     print('distances : ', distances.shape)
 
-    path = './datasets/'+nameFull
+    fullPath = os.path.dirname(os.path.abspath(__file__))
+    path = fullPath + '/datasets/'+nameFull
     (trueIndexes, trueDistances) = readDB(path)
 
     # compareFirstTen(indexes, distances, trueIndexes, trueDistances)

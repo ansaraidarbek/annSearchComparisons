@@ -1,6 +1,7 @@
 import mrpt
 from time import perf_counter
 import numpy as np
+import os
 
 def mrpt_run (name) :
     print("MRPT start ----------------------------------------------")
@@ -46,7 +47,8 @@ def mrpt_run (name) :
     print('indexes : ', indexes.shape)
     print('distances : ', distances.shape)
 
-    path = './datasets/'+nameFull
+    fullPath = os.path.dirname(os.path.abspath(__file__))
+    path = fullPath + '/datasets/'+nameFull
     (trueIndexes, trueDistances) = readDB(path)
 
     # compareFirstTen(indexes, distances, trueIndexes, trueDistances)
