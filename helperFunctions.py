@@ -41,7 +41,7 @@ def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsi
         average += sum
         sums.append(sum)
     average /= indexes.shape[0]
-    print(f"{average:.4f}")
+    print(f"Recall@{epsilon}: {average:.4f}")
 
 def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
     def areSame(a, b) :

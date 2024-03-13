@@ -58,3 +58,12 @@ def get_ann_benchmark_data(dataset_name):
     print('testDataset : ', np.array(hdf5_file['test']).shape)
     return np.array(hdf5_file['train']).astype('float32'), np.array(hdf5_file['test']).astype('float32'), hdf5_file.attrs['distance']
 
+def get_ann_benchmark_data2(dataset_name):
+    if not os.path.exists(f"./datasets/{dataset_name}.hdf5"):
+        print(f"Dataset {dataset_name} is not cached; downloading now ...")
+        urlretrieve(f"http://ann-benchmarks.com/{dataset_name}.hdf5", f"./datasets/{dataset_name}.hdf5")
+    hdf5_file = h5py.File(f"./datasets/{dataset_name}.hdf5", "r")
+    print('trainDataset : ', np.array(hdf5_file['train']).shape)
+    print('testDataset : ', np.array(hdf5_file['test']).shape)
+    return np.array(hdf5_file['train']).astype('float32'), np.array(hdf5_file['test']).astype('float32'), hdf5_file.attrs['distance']
+
