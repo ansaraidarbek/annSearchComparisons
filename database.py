@@ -49,7 +49,7 @@ def convertToNumpyArr(column) :
 #     print('datasetLabels : ', datasetLabels.shape)
 #     return (datasetImages, datasetLabels)
 
-def returnPathName (name) :
+def returnAnnBenchmarkName (name) :
     def convertName(name) :
         newName = ''
         for i in name: 
@@ -84,7 +84,7 @@ def get_ann_benchmark_data(dataset_name):
     print(f"{fullPath}/datasets/{dataset_name}.hdf5")
     if not os.path.exists(f"{fullPath}/datasets/{dataset_name}.hdf5"):
         print(f"Dataset {dataset_name} is not cached; downloading now ...")
-        print(annBenchmarkName)
+        annBenchmarkName = returnAnnBenchmarkName(dataset_name)
         urlretrieve(f"http://ann-benchmarks.com/{annBenchmarkName}.hdf5", f"{fullPath}/datasets/{dataset_name}.hdf5")
     hdf5_file = h5py.File(f"{fullPath}/datasets/{dataset_name}.hdf5", "r")
     print('trainDataset : ', np.array(hdf5_file['train']).shape)
