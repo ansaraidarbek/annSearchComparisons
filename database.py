@@ -72,6 +72,7 @@ def pathChanger (path) :
     ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB"]
     for i in range(len(ignorePaths)):
         path = path.replace('\\' + str(i+1) + '_' + ignorePaths[i], '')
+        path = path.replace('/' + str(i+1) + '_' + ignorePaths[i], '')
     return path
 
 def get_ann_benchmark_data(dataset_name):
