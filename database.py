@@ -49,20 +49,43 @@ def convertToNumpyArr(column) :
 #     print('datasetLabels : ', datasetLabels.shape)
 #     return (datasetImages, datasetLabels)
 
-def get_ann_benchmark_data(dataset_name):
-    if not os.path.exists(f"../datasets/{dataset_name}.hdf5"):
-        print(f"Dataset {dataset_name} is not cached; downloading now ...")
-        urlretrieve(f"http://ann-benchmarks.com/{dataset_name}.hdf5", f"../datasets/{dataset_name}.hdf5")
-    hdf5_file = h5py.File(f"../datasets/{dataset_name}.hdf5", "r")
-    print('trainDataset : ', np.array(hdf5_file['train']).shape)
-    print('testDataset : ', np.array(hdf5_file['test']).shape)
-    return np.array(hdf5_file['train']).astype('float32'), np.array(hdf5_file['test']).astype('float32'), hdf5_file.attrs['distance']
+def returnPathName (name) :
+    def convertName(name) :
+        newName = ''
+        for i in name: 
+            if (i.isupper()):
+                newName += '-'
+            newName += i.lower()
+        return newName
+    metrics = {
+    'euclidean' : ['fashionMnist-784', 'gist-960', 'mnist-784', 'sift-128'],
+    'angular' : ['deepImage-96', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'nytimes-256'],
+    'dot' : ['lastfm-64'],
+    'jaccard' : ['kosarak', 'movielens10m']
+    }
+    for key in metrics:
+        if name in metrics[key]:
+            return convertName(name) + '-' + key
+    return False
 
-def get_ann_benchmark_data2(dataset_name):
-    fullPath = os.path.dirname(os.path.abspath(__file__))
+def pathChanger (path) :
+    ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB"]
+    for i in range(len(ignorePaths)):
+        path = path.replace('\\' + str(i+1) + '_' + ignorePaths[i], '')
+    return path
+
+def get_ann_benchmark_data(dataset_name):
+    fullPath = None
+    try:
+        fullPath = os.path.dirname(os.path.abspath(__file__))
+    except:
+        path = os.getcwd()
+        fullPath = pathChanger(path)
+    print(f"{fullPath}/datasets/{dataset_name}.hdf5")
     if not os.path.exists(f"{fullPath}/datasets/{dataset_name}.hdf5"):
         print(f"Dataset {dataset_name} is not cached; downloading now ...")
-        urlretrieve(f"http://ann-benchmarks.com/{dataset_name}.hdf5", f"{fullPath}/datasets/{dataset_name}.hdf5")
+        print(annBenchmarkName)
+        urlretrieve(f"http://ann-benchmarks.com/{annBenchmarkName}.hdf5", f"{fullPath}/datasets/{dataset_name}.hdf5")
     hdf5_file = h5py.File(f"{fullPath}/datasets/{dataset_name}.hdf5", "r")
     print('trainDataset : ', np.array(hdf5_file['train']).shape)
     print('testDataset : ', np.array(hdf5_file['test']).shape)

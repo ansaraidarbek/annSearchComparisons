@@ -3,10 +3,11 @@ from time import perf_counter
 import numpy as np
 import os
 
-def nmslib_run (name) :
+def nmslib_run (name, metric, runs, queries) :
     print("NMSLIB start ----------------------------------------------")
     nameFull = name +'-true-labels.xlsx'
-    datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data2(name)
+    nameFull = name + '-' + metric + '-true-labels.xlsx'
+    datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data(name)
 
     def createIndex(indexMethod, datasetImages):
         f = datasetImages.shape[1] # Length of item vector that will be indexed
@@ -16,12 +17,9 @@ def nmslib_run (name) :
         index.createIndex({'post': 2}, print_progress=True)
         time_end = perf_counter()
         totalTime = (time_end - time_start)
-        print(f'Building time {totalTime:.3f}')
         return (index, totalTime)
-    (indexedStruct, time) = createIndex(nmslib.init, datasetTrainImages)
 
-    # (min, max) = createIndexNumerous(createIndex, AnnoyIndex, datasetImages, 10)
-    # print('min : ', min, '\n','max : ', max,)
+    (minBuildTime, maxBuildTime, indexedStruct) = createIndexNumerous(createIndex, nmslib.init, datasetTrainImages, runs)
 
     indexes = []
     distances = []
@@ -34,14 +32,9 @@ def nmslib_run (name) :
             totalTime += (time_end - time_start)
             indexes.append(index)
             distances.append(np.sqrt(distance))
-        # report the duration
-        print(f'Searching time {totalTime:.3f}')
         return np.round(totalTime, 3)
-    numberOfQueries = 1000
-    measureTime(numberOfQueries, indexes, distances, datasetTestImages)
-    
-    # (min, max) = measureTimeNumerous(measureTime, 10)
-    # print('min : ', min, '\n','max : ', max,)
+
+    (minSearchTime, maxSearchTime, indexes, distances) = measureTimeNumerous(measureTime, runs, queries, datasetTestImages)
 
     indexes = np.array(indexes)
     distances = np.round(np.array(distances).astype(float), 4)
@@ -53,9 +46,11 @@ def nmslib_run (name) :
     path = fullPath + '/datasets/'+nameFull
     (trueIndexes, trueDistances) = readDB(path)
 
-    # compareFirstTen(indexes, distances, trueIndexes, trueDistances)
+    # amount = 10
+    # compareElems(amount, indexes, distances, trueIndexes, trueDistances)
 
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1)
-    print("NMSLIB end ----------------------------------------------")
+    R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
+    R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
+    R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
+    print("HNSW end ----------------------------------------------")
+    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]

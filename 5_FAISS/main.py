@@ -2,66 +2,24 @@ import faiss
 from time import perf_counter
 import numpy as np
 import os
-def faissHNSW_run (name):
-    nameFull = name +'-true-labels.xlsx'
-    datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data2(name)
 
+
+
+def faiss_run (name, metric, runs, queries, method) :
+    print("FAISS start ----------------------------------------------")
+    nameFull = name +'-true-labels.xlsx'
+    nameFull = name + '-' + metric + '-true-labels.xlsx'
+    datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data(name)
     def createIndex(indexMethod, datasetImages):
         d = datasetImages.shape[1] # dimension
-        M = 16
-        time_start = perf_counter()
-        index = indexMethod(d, M)
-        index.add(datasetImages) 
-        time_end = perf_counter()
-        totalTime = (time_end - time_start)
-        print(f'Building time {totalTime:.3f}')
-        return (index, totalTime)
-    (indexedStruct, time) = createIndex(faiss.IndexHNSWFlat, datasetTrainImages)
-    # (min, max) = createIndexNumerous(createIndex, AnnoyIndex, datasetImages, 10)
-    # print('min : ', min, '\n','max : ', max,)
-
-    indexes = []
-    distances = []
-    def measureTime(par, indexes, distances, datasetImages):
-        k=100
-        totalTime = 0
-        for i in range(par) : 
-            xq = datasetImages[i:i+1].astype('float32') # Use the first image as the query vector
+        if (method == 'hnsw'):
+            M = 16
             time_start = perf_counter()
-            distance, index = indexedStruct.search(xq, k) 
+            index = indexMethod(d, M)
+            index.add(datasetImages) 
             time_end = perf_counter()
-            totalTime += (time_end - time_start)
-            distances.append(np.sqrt(distance[0]))
-            indexes.append(index[0])
-        # report the duration
-        print(f'Searching time {totalTime:.3f}')
-    measureTime(1000, indexes, distances, datasetTestImages)
-    
-    # (min, max) = measureTimeNumerous(measureTime, 10)
-    # print('min : ', min, '\n','max : ', max,)
-
-    indexes = np.array(indexes)
-    distances = np.round(np.array(distances).astype(float), 4)
-
-    print('indexes : ', indexes.shape)
-    print('distances : ', distances.shape)
-
-    fullPath = os.path.dirname(os.path.abspath(__file__))
-    path = fullPath + '/datasets/'+nameFull
-    (trueIndexes, trueDistances) = readDB(path)
-
-    # compareFirstTen(indexes, distances, trueIndexes, trueDistances)
-
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1)
-
-def faissIVF_run (name):
-    nameFull = name +'-true-labels.xlsx'
-    datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data2(name)
-
-    def createIndex(indexMethod, datasetImages):
-        d = datasetImages.shape[1] # dimension
+            totalTime = (time_end - time_start)
+            return (index, totalTime)
         M = 100
         time_start = perf_counter()
         index = indexMethod(faiss.IndexFlatL2(d), d, M, faiss.METRIC_L2)
@@ -69,15 +27,13 @@ def faissIVF_run (name):
         index.add(datasetImages) 
         time_end = perf_counter()
         totalTime = (time_end - time_start)
-        print(f'Building time {totalTime:.3f}')
         return (index, totalTime)
-    (indexedStruct, time) = createIndex(faiss.IndexIVFFlat, datasetTrainImages)
-    # (min, max) = createIndexNumerous(createIndex, AnnoyIndex, datasetImages, 10)
-    # print('min : ', min, '\n','max : ', max,)
+    
+    index = faiss.IndexHNSWFlat if method == 'hnsw' else faiss.IndexIVFFlat
+    (minBuildTime, maxBuildTime, indexedStruct) = createIndexNumerous(createIndex, index, datasetTrainImages, runs)
 
-    indexes = []
-    distances = []
     def measureTime(par, indexes, distances, datasetImages):
+
         k=100
         totalTime = 0
         for i in range(par) : 
@@ -88,12 +44,9 @@ def faissIVF_run (name):
             totalTime += (time_end - time_start)
             distances.append(np.sqrt(distance[0]))
             indexes.append(index[0])
-        # report the duration
-        print(f'Searching time {totalTime:.3f}')
-    measureTime(1000, indexes, distances, datasetTestImages)
-    
-    # (min, max) = measureTimeNumerous(measureTime, 10)
-    # print('min : ', min, '\n','max : ', max,)
+        return np.round(totalTime, 3)
+
+    (minSearchTime, maxSearchTime, indexes, distances) = measureTimeNumerous(measureTime, runs, queries, datasetTestImages)
 
     indexes = np.array(indexes)
     distances = np.round(np.array(distances).astype(float), 4)
@@ -105,17 +58,11 @@ def faissIVF_run (name):
     path = fullPath + '/datasets/'+nameFull
     (trueIndexes, trueDistances) = readDB(path)
 
-    # compareFirstTen(indexes, distances, trueIndexes, trueDistances)
+    # amount = 10
+    # compareElems(amount, indexes, distances, trueIndexes, trueDistances)
 
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01)
-    calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1)
-
-
-def faiss_run (name) :
-    print("FAISS HNSW start ----------------------------------------------")
-    faissHNSW_run(name)
-    print("FAISS HNSW end ----------------------------------------------")
-    print("FAISS IVF start ----------------------------------------------")
-    faissIVF_run(name)
-    print("FAISS IVF end ----------------------------------------------")
+    R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
+    R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
+    R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
+    print("FAISS end ----------------------------------------------")
+    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]

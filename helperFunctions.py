@@ -1,15 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-def compareFirstTen (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
-    def areSame(a, b) :
-        return (a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1])
-    if (not areSame(indexes, trueIndexes)):
-        return
-    for i in range(indexes.shape[0]) :
-        for j in range(10) :
-            print(str(indexes[i][j]) + " || " + str(trueIndexes[i][j]))
-            print(str(distances[i][j]) + " || " + str(trueDistances[i][j]))
-        break
 
 def compareElems (num, indexes, distances, trueIndexes, trueDistances, epsilon = 1):
     def areSame(a, b) :
@@ -22,7 +12,7 @@ def compareElems (num, indexes, distances, trueIndexes, trueDistances, epsilon =
             print(str(distances[i][j]) + " || " + str(trueDistances[i][j]))
         break
 
-def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
+def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsilon = 1, show = False):
     def areSame(a, b) :
         return (a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1])
     if (not areSame(indexes, trueIndexes)):
@@ -41,9 +31,11 @@ def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsi
         average += sum
         sums.append(sum)
     average /= indexes.shape[0]
-    print(f"Recall@{epsilon}: {average:.4f}")
+    if (not show):
+        print(f"Recall@{epsilon}: {average:.4f}")
+    return np.round(average, 4)
 
-def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilon = 1):
+def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilon = 1, show = False):
     def areSame(a, b) :
         return (a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1])
     if (not areSame(indexes, trueIndexes)):
@@ -57,7 +49,9 @@ def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilo
                 # print(str(distances[i][j]) + " || " + str(trueDistances[i][j]))
                 sum+=1
     sum /= (indexes.shape[0] * indexes.shape[1])
-    print(sum)
+    if (not show):
+        print(sum)
+    return np.round(sum, 4)
 
 def draw_mnist(indexes, distances, datasetImages):
     arr = np.empty([0,datasetImages.shape[1]])
@@ -108,24 +102,27 @@ def minNone (a , b) :
         return None
     
         
-def measureTimeNumerous(function, n) :
-    queriesNumber = 1000
+def measureTimeNumerous(function, runs, queries, dataset) :
+    queriesNumber = queries
+    min = None
+    max = None
     indexes = []
     distances = []
-    min = None
-    max = None
-    for i in range(n):
-        time = float(function(queriesNumber, indexes, distances))
+    for i in range(runs):
+        indexes.clear()
+        distances.clear()
+        time = float(function(queriesNumber, indexes, distances, dataset))
         max = maxNone(max, time)
         min = minNone(min, time)
-    return (min, max)
+    return (np.round(min, 3), np.round(max, 3), indexes, distances)
 
-def createIndexNumerous(function, indexingMethod, dataset, n) :
+def createIndexNumerous(function, indexingMethod, dataset, runs) :
     min = None
     max = None
-    for i in range(n):
-        (_, time) = function(indexingMethod, dataset)
+    indexedStruct = None
+    for i in range(runs):
+        (indexedStruct, time) = function(indexingMethod, dataset)
         max = maxNone(max, time)
         min = minNone(min, time)
-    return (min, max)
+    return (np.round(min, 3), np.round(max, 3), indexedStruct)
 
