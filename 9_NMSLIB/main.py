@@ -30,27 +30,30 @@ def nmslib_run (name, metric, runs, queries) :
             index, distance = indexedStruct.knnQuery(datasetTestImages[i], k=100)
             time_end = perf_counter()
             totalTime += (time_end - time_start)
-            indexes.append(index)
-            distances.append(np.sqrt(distance))
+            indexes.append(index[:100])
+            distances.append(np.sqrt(distance[:100]))
         return np.round(totalTime, 3)
 
     (minSearchTime, maxSearchTime, indexes, distances) = measureTimeNumerous(measureTime, runs, queries, datasetTestImages)
 
-    indexes = np.array(indexes)
-    distances = np.round(np.array(distances).astype(float), 4)
+    try:
+        indexes = np.array(indexes)
+        distances = np.round(np.array(distances).astype(float), 4)
 
-    print('indexes : ', indexes.shape)
-    print('distances : ', distances.shape)
+        print('indexes : ', indexes.shape)
+        print('distances : ', distances.shape)
 
-    fullPath = os.path.dirname(os.path.abspath(__file__))
-    path = fullPath + '/datasets/'+nameFull
-    (trueIndexes, trueDistances) = readDB(path)
+        fullPath = os.path.dirname(os.path.abspath(__file__))
+        path = fullPath + '/datasets/'+nameFull
+        (trueIndexes, trueDistances) = readDB(path)
 
-    # amount = 10
-    # compareElems(amount, indexes, distances, trueIndexes, trueDistances)
+        # amount = 10
+        # compareElems(amount, indexes, distances, trueIndexes, trueDistances)
 
-    R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
-    R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
-    R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
-    print("HNSW end ----------------------------------------------")
-    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]
+        R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
+        R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
+        R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
+        print("NMSLIB end ----------------------------------------------")
+        return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]
+    except:
+        return ['None']
