@@ -15,7 +15,8 @@ exec(open(fullPath + "/7_PYNNDESCENT/main.py").read())
 exec(open(fullPath + "/8_SCIPPY/main.py").read())
 exec(open(fullPath + "/9_NMSLIB/main.py").read())
 
-naming = ['gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'nytimes-256', 'sift-128', 'lastfm-64', 'deepImage-96']
+naming = ['glove-25', 'glove-50', 'glove-100', 'glove-200', 'nytimes-256', 'sift-128', 'lastfm-64']
+problematic = ['deepImage-96', 'gist-960']
 methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_ivf', 'pynndescent', 'scipy', 'nmslib']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 results = []
