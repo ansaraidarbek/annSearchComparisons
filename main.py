@@ -15,16 +15,16 @@ exec(open(fullPath + "/7_PYNNDESCENT/main.py").read())
 exec(open(fullPath + "/8_SCIPPY/main.py").read())
 exec(open(fullPath + "/9_NMSLIB/main.py").read())
 
-naming = ['glove-25', 'glove-50', 'glove-100', 'glove-200', 'nytimes-256', 'sift-128', 'lastfm-64']
-problematic = ['deepImage-96', 'gist-960']
-methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_ivf', 'scipy', 'nmslib'] #'pynndescent'
+naming = ['nytimes-256', 'sift-128', 'lastfm-64']
+methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_ivf', 'pynndescent', 'scipy', 'nmslib']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 results = []
 metric = 'euclidean'
 example = ['mnist-784', 'fashionMnist-784']
 runs = 1
 queries = 1000
-for name in problematic:
+for name in naming:
+    print(name + "-----------------------------------")
     result = []
     annoy = annoy_run(name, metric, runs, queries)
     print(annoy)
@@ -47,9 +47,9 @@ for name in problematic:
     faissIvf = faiss_run(name, metric, runs, queries, 'ivf')
     print(faissIvf)
     result.append(faissIvf)
-    # pyNNDescent = pynndescent_run(name, metric, runs, queries)
-    # print(pyNNDescent)
-    # result.append(pyNNDescent)
+    pyNNDescent = pynndescent_run(name, metric, runs, queries)
+    print(pyNNDescent)
+    result.append(pyNNDescent)
     scippy = scipy_run(name, metric, runs, queries)
     print(scippy)
     result.append(scippy)
@@ -62,10 +62,10 @@ for name in problematic:
             print(methods[j], end=', ')
         print(result[j])
 
-for i in range(len(problematic)):
-    print(problematic[i] + "start ---------------------------------------")
+for i in range(len(naming)):
+    print(naming[i] + "start ---------------------------------------")
     for j in range(len(results[i])):
         if j < len(methods) :
             print(methods[j], end=', ')
         print(results[i][j])
-    print(problematic[i] + "end ---------------------------------------")
+    print(naming[i] + "end ---------------------------------------")

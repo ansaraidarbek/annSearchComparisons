@@ -69,7 +69,7 @@ def returnAnnBenchmarkName (name) :
     return False
 
 def pathChanger (path) :
-    ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB"]
+    ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB", "NGT"]
     for i in range(len(ignorePaths)):
         path = path.replace('\\' + str(i+1) + '_' + ignorePaths[i], '')
         path = path.replace('/' + str(i+1) + '_' + ignorePaths[i], '')
