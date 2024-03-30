@@ -22,16 +22,16 @@ metric = 'euclidean'
 runs = 1
 queries = 1000
 for name in naming:
-    # results.append(annoy_run(name, metric, runs, queries))
-    # results.append(sclearn_run(name, metric, runs, queries, 'ball_tree'))
-    # results.append(sclearn_run(name, metric, runs, queries, 'kd_tree'))
-    # results.append(mrpt_run(name, metric, runs, queries))
-    # results.append(hnsw_run(name, metric, runs, queries))
-    # results.append(faiss_run(name, metric, runs, queries, 'hnsw'))
-    # results.append(faiss_run(name, metric, runs, queries, 'ivf'))
-    # results.append(pynndescent_run(name, metric, runs, queries))
-    results.append(scipy_run(name, metric, runs, queries))
-    # results.append(nmslib_run(name, metric, runs, queries))
+    results.append(annoy_run(name, metric, runs, queries))
+    results.append(sclearn_run(name, metric, runs, queries, 'ball_tree'))
+    results.append(sclearn_run(name, metric, runs, queries, 'kd_tree'))
+    results.append(mrpt_run(name, metric, runs, queries))
+    results.append(hnsw_run(name, metric, runs, queries))
+    results.append(faiss_run(name, metric, runs, queries, 'hnsw'))
+    results.append(faiss_run(name, metric, runs, queries, 'ivf'))
+    results.append(pynndescent_run(name, metric, runs, queries))
+    # results.append(scipy_run(name, metric, runs, queries))
+    results.append(nmslib_run(name, metric, runs, queries))
 
 if (len(example) == len(results)):
     for i in range(len(results)):
