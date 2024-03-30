@@ -112,6 +112,7 @@ def measureTimeNumerous(function, runs, queries, dataset) :
         indexes.clear()
         distances.clear()
         time = float(function(queriesNumber, indexes, distances, dataset))
+        print('search ', i + 1, ' done')
         max = maxNone(max, time)
         min = minNone(min, time)
     return (np.round(min, 3), np.round(max, 3), indexes, distances)
@@ -122,6 +123,7 @@ def createIndexNumerous(function, indexingMethod, dataset, runs) :
     indexedStruct = None
     for i in range(runs):
         (indexedStruct, time) = function(indexingMethod, dataset)
+        print('index ', i + 1, ' created')
         max = maxNone(max, time)
         min = minNone(min, time)
     return (np.round(min, 3), np.round(max, 3), indexedStruct)
