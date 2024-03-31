@@ -30,8 +30,8 @@ def nmslib_run (name, metric, runs, queries) :
             index, distance = indexedStruct.knnQuery(datasetTestImages[i], k=100)
             time_end = perf_counter()
             totalTime += (time_end - time_start)
-            indexes.append(index[:100])
-            distances.append(np.sqrt(distance[:100]))
+            indexes.append(index)
+            distances.append(np.sqrt(distance))
         return np.round(totalTime, 3)
 
     (minSearchTime, maxSearchTime, indexes, distances) = measureTimeNumerous(measureTime, runs, queries, datasetTestImages)

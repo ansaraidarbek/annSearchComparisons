@@ -1,4 +1,4 @@
-import mrpt
+import mrpt as mr
 from time import perf_counter
 import numpy as np
 import os
@@ -16,7 +16,8 @@ def mrpt_run (name, metric, runs, queries) :
         totalTime = (time_end - time_start)
         return (index, totalTime)
 
-    (minBuildTime, maxBuildTime, indexedStruct) = createIndexNumerous(createIndex, mrpt.MRPTIndex, datasetTrainImages, runs)
+    print(mr, mr.MRPTIndex)
+    (minBuildTime, maxBuildTime, indexedStruct) = createIndexNumerous(createIndex, mr.MRPTIndex, datasetTrainImages, runs)
 
     def measureTime(par, indexes, distances, datasetImages):
         totalTime = 0
