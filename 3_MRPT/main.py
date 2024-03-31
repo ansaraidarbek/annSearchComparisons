@@ -12,6 +12,7 @@ def mrpt_run (name, metric, runs, queries) :
     def createIndex(indexMethod, datasetImages):
         time_start = perf_counter()
         index = indexMethod(datasetImages)
+        index.build_autotune_sample(0.8, 100)
         time_end = perf_counter()
         totalTime = (time_end - time_start)
         return (index, totalTime)
@@ -25,7 +26,7 @@ def mrpt_run (name, metric, runs, queries) :
         for i in range(par) : 
             xq = datasetImages[i:i+1].astype('float32') # Use the first image as the query vector
             time_start = perf_counter()
-            index, distance = indexedStruct.exact_search(xq, k, return_distances=True)
+            index, distance = indexedStruct.ann(xq, return_distances=True)
             time_end = perf_counter()
             totalTime += (time_end - time_start)
             indexes.append(index[0])
