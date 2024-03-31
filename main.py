@@ -24,6 +24,7 @@ metric = 'euclidean'
 runs = 1
 queries = 1000
 for name in naming:
+    print(name + "-----------------------------------")
     result = []
     annoy = annoy_run(name, metric, runs, queries)
     print(annoy)
