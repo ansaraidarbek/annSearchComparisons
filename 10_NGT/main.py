@@ -3,8 +3,8 @@ from time import perf_counter
 import numpy as np
 import os
 
-def scipy_run (name, metric, runs, queries) :
-    print("SCIPY start ----------------------------------------------")
+def ngt_run (name, metric, runs, queries) :
+    print("NGT start ----------------------------------------------")
     nameFull = name +'-true-labels.xlsx'
     nameFull = name + '-' + metric + '-true-labels.xlsx'
     datasetTrainImages, datasetTestImages, _ = get_ann_benchmark_data(name)
@@ -58,5 +58,5 @@ def scipy_run (name, metric, runs, queries) :
     R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
     R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
     R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
-    print("SCIPY end ----------------------------------------------")
+    print("NGT end ----------------------------------------------")
     return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]

@@ -20,16 +20,18 @@ def faiss_run (name, metric, runs, queries, method) :
             time_end = perf_counter()
             totalTime = (time_end - time_start)
             return (index, totalTime)
-        M = 100
+        M = 28  # Number of subquantizers (bits per vector)
+        nbits = 7 # Total number of bits for the PQ code
         time_start = perf_counter()
-        index = indexMethod(faiss.IndexFlatL2(d), d, M, faiss.METRIC_L2)
+        index = indexMethod(d, M, nbits, faiss.METRIC_L2)
         index.train(datasetImages)
         index.add(datasetImages) 
         time_end = perf_counter()
         totalTime = (time_end - time_start)
+        print(f'Took {totalTime:.3f} seconds')
         return (index, totalTime)
     
-    index = faiss.IndexHNSWFlat if method == 'hnsw' else faiss.IndexIVFFlat
+    index = faiss.IndexHNSWFlat if method == 'hnsw' else faiss.IndexPQ
     (minBuildTime, maxBuildTime, indexedStruct) = createIndexNumerous(createIndex, index, datasetTrainImages, runs)
 
     def measureTime(par, indexes, distances, datasetImages):

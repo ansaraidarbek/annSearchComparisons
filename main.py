@@ -11,13 +11,14 @@ exec(open(fullPath + "/4_HNSW/main.py").read())
 exec(open(fullPath + "/5_FAISS/main.py").read())
 
 # exec(open(fullPath + "/6_DATASCETCH/main.py").read())
-exec(open(fullPath + "/7_PYNNDESCENT/main.py").read())
-exec(open(fullPath + "/8_SCIPPY/main.py").read())
+# exec(open(fullPath + "/7_PYNNDESCENT/main.py").read())
+# exec(open(fullPath + "/8_SCIPPY/main.py").read())
 exec(open(fullPath + "/9_NMSLIB/main.py").read())
+exec(open(fullPath + "/10_NGT/main.py").read())
 
-naming = ['mnist-784', 'fashionMnist-784', 'nytimes-256', 'lastfm-64']
+naming = ['mnist-784', 'fashionMnist-784']
 problematic = ['deepImage-96', 'gist-960']
-methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_ivf', 'pynndescent', 'scipy', 'nmslib']
+methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_pq', 'nmslib', 'ngt']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 results = []
 metric = 'euclidean'
@@ -44,18 +45,21 @@ for name in naming:
     faissHnsw = faiss_run(name, metric, runs, queries, 'hnsw')
     print(faissHnsw)
     result.append(faissHnsw)
-    faissIvf = faiss_run(name, metric, runs, queries, 'ivf')
-    print(faissIvf)
-    result.append(faissIvf)
-    pyNNDescent = pynndescent_run(name, metric, runs, queries)
-    print(pyNNDescent)
-    result.append(pyNNDescent)
-    scippy = scipy_run(name, metric, runs, queries)
-    print(scippy)
-    result.append(scippy)
+    faissPQ = faiss_run(name, metric, runs, queries, 'pq')
+    print(faissPQ)
+    result.append(faissPQ)
+    # pyNNDescent = pynndescent_run(name, metric, runs, queries)
+    # print(pyNNDescent)
+    # result.append(pyNNDescent)
+    # scippy = scipy_run(name, metric, runs, queries)
+    # print(scippy)
+    # result.append(scippy)
     nmslibNhsw = nmslib_run(name, metric, runs, queries)
     print(nmslibNhsw)
     result.append(nmslibNhsw)
+    ngt = ngt_run(name, metric, runs, queries)
+    print(ngt)
+    result.append(ngt)
     results.append(result)
     for j in range(len(result)):
         if j < len(methods) :
