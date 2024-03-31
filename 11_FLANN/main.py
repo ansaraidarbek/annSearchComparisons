@@ -24,18 +24,13 @@ def scipy_run (name, metric, runs, queries) :
         totalTime = 0
         for i in range(par) : 
             xq = datasetImages[i:i+1].astype('float32') # Use the first image as the query vector
-            xq = xq.flatten().tolist()
-            time_start = perf_counter()
-            storage = indexedStruct.search(xq, 100)
-            time_end = perf_counter()
+            # xq = xq.flatten().tolist()
+            time_start = timeit.default_timer()
+            index, distance = indexedStruct.nn_index(xq, 100)
+            time_end = timeit.default_timer()
             totalTime += (time_end - time_start)
-            index = []
-            distance = []
-            for i in range(len(storage)):
-                index.append(storage[i][0])
-                distance.append(storage[i][1])
-            indexes.append(index[:100])
-            distances.append(distance[:100])
+            indexes.append(index[0])
+            distances.append(np.sqrt(distance[0]))
         return np.round(totalTime, 3)
     
     (minSearchTime, maxSearchTime, indexes, distances) = measureTimeNumerous(measureTime, runs, queries, datasetTestImages)
