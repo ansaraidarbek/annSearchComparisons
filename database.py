@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
-from keras.datasets import mnist
-from urllib.request import urlretrieve
+from six.moves import urllib
+from openpyxl import load_workbook 
 import h5py
 
 def exportDB (indexes, distances, name, type) :
@@ -20,7 +20,18 @@ def exportDB (indexes, distances, name, type) :
         df.to_excel(out_path)
 
 def readDB (path) :
-    df = pd.read_excel(path)
+    wb = load_workbook(filename = path)
+    ws = wb['Sheet1']
+
+    data = ws.values
+
+    # Get the first line in file as a header line
+
+    columns = next(data)[0:]
+
+    # Create a DataFrame based on the second and subsequent lines of data
+
+    df = pd.DataFrame(data, columns=columns)
     trueIndexes = df['Indexes'].to_numpy()
     trueDistances = df['Distances'].to_numpy()
     trueIndexes = convertToNumpyArr(trueIndexes)
@@ -69,7 +80,7 @@ def returnAnnBenchmarkName (name) :
     return False
 
 def pathChanger (path) :
-    ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB", "NGT"]
+    ignorePaths = ['ANNOY', 'SCLEARN', 'MRPT', 'HNSW', 'FAISS', 'DATASKETCH', 'PYNNDESCENT', "SCIPPY", "NMSLIB", "NGT", "FLANN"]
     for i in range(len(ignorePaths)):
         path = path.replace('\\' + str(i+1) + '_' + ignorePaths[i], '')
         path = path.replace('/' + str(i+1) + '_' + ignorePaths[i], '')
@@ -82,12 +93,15 @@ def get_ann_benchmark_data(dataset_name):
     except:
         path = os.getcwd()
         fullPath = pathChanger(path)
-    print(f"{fullPath}/datasets/{dataset_name}.hdf5")
-    if not os.path.exists(f"{fullPath}/datasets/{dataset_name}.hdf5"):
-        print(f"Dataset {dataset_name} is not cached; downloading now ...")
+    absolutePath = fullPath + '/datasets/' + dataset_name + '.hdf5'
+    message = 'Dataset ' + dataset_name + ' is not cached; downloading now ...'
+    if not os.path.exists(absolutePath):
+        print(message)
         annBenchmarkName = returnAnnBenchmarkName(dataset_name)
-        urlretrieve(f"http://ann-benchmarks.com/{annBenchmarkName}.hdf5", f"{fullPath}/datasets/{dataset_name}.hdf5")
-    hdf5_file = h5py.File(f"{fullPath}/datasets/{dataset_name}.hdf5", "r")
+        annBenchmarkPath = 'http://ann-benchmarks.com/' + annBenchmarkName + '.hdf5'
+        urllib.request.urlretrieve(annBenchmarkPath, absolutePath)
+        # urlretrieve(annBenchmarkPath, absolutePath)
+    hdf5_file = h5py.File(absolutePath, "r")
     print('trainDataset : ', np.array(hdf5_file['train']).shape)
     print('testDataset : ', np.array(hdf5_file['test']).shape)
     return np.array(hdf5_file['train']).astype('float32'), np.array(hdf5_file['test']).astype('float32'), hdf5_file.attrs['distance']

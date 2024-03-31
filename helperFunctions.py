@@ -1,3 +1,5 @@
+
+from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -32,7 +34,8 @@ def calculateRecallAverage (indexes, distances, trueIndexes, trueDistances, epsi
         sums.append(sum)
     average /= indexes.shape[0]
     if (not show):
-        print(f"Recall@{epsilon}: {average:.4f}")
+        msg = 'Recall@' + str(epsilon) + ': ' + str(np.round(average, 4))
+        print(msg)
     return np.round(average, 4)
 
 def calculateRecallTotal (indexes, distances, trueIndexes, trueDistances, epsilon = 1, show = False):
@@ -109,8 +112,8 @@ def measureTimeNumerous(function, runs, queries, dataset) :
     indexes = []
     distances = []
     for i in range(runs):
-        indexes.clear()
-        distances.clear()
+        del indexes[:]
+        del distances[:]
         time = float(function(queriesNumber, indexes, distances, dataset))
         print('search ', i + 1, ' done')
         max = maxNone(max, time)
@@ -127,4 +130,21 @@ def createIndexNumerous(function, indexingMethod, dataset, runs) :
         max = maxNone(max, time)
         min = minNone(min, time)
     return (np.round(min, 3), np.round(max, 3), indexedStruct)
+
+def calculateNormRecall(indexes, trueIndexes, show = False):
+    average = 0
+    for i in range(indexes.shape[0]):
+        sum = 0
+        for j in range(indexes.shape[1]):
+            if (indexes[i][j] in trueIndexes[i]):
+                sum+=1
+        if (i == 0):
+            print(sum)
+        average += sum
+    average/=(indexes.shape[0] * indexes.shape[1])
+    if (not show):
+        msg = 'norm Recall is ' + str(np.round(average, 4))
+        print(msg)
+    return np.round(average, 4)
+
 
