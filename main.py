@@ -15,12 +15,12 @@ exec(open(fullPath + "/7_PYNNDESCENT/main.py").read())
 exec(open(fullPath + "/8_SCIPPY/main.py").read())
 exec(open(fullPath + "/9_NMSLIB/main.py").read())
 
-naming = ['nytimes-256', 'sift-128', 'lastfm-64']
+naming = ['mnist-784', 'fashionMnist-784', 'nytimes-256', 'lastfm-64']
+problematic = ['deepImage-96', 'gist-960']
 methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_ivf', 'pynndescent', 'scipy', 'nmslib']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 results = []
 metric = 'euclidean'
-example = ['mnist-784', 'fashionMnist-784']
 runs = 1
 queries = 1000
 for name in naming:

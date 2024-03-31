@@ -104,6 +104,25 @@ def minNone (a , b) :
     if statement2 and statement1:
         return None
     
+def pad(index, k) :
+    while (len(index) < k) :
+        index.append(-1)
+
+def formatIndexesAndDistance(indexes, distances, k):
+    for i in range (len(indexes)):
+        if isinstance(indexes[i], np.ndarray):
+            indexes[i] = indexes[i].tolist()
+        if (len(indexes[i]) > k):
+            indexes[i] = indexes[i][:k]
+        elif(len(indexes[i]) < k):
+            pad(indexes[i], k)
+    for i in range (len(distances)):
+        if isinstance(distances[i], np.ndarray):
+            distances[i] = distances[i].tolist()
+        if (len(distances[i]) > k):
+            distances[i] = distances[i][:k]
+        elif(len(distances[i]) < k):
+            pad(distances[i], k)
         
 def measureTimeNumerous(function, runs, queries, dataset) :
     queriesNumber = queries
@@ -118,6 +137,7 @@ def measureTimeNumerous(function, runs, queries, dataset) :
         print('search ', i + 1, ' done')
         max = maxNone(max, time)
         min = minNone(min, time)
+    formatIndexesAndDistance(indexes, distances, 100)
     return (np.round(min, 3), np.round(max, 3), indexes, distances)
 
 def createIndexNumerous(function, indexingMethod, dataset, runs) :
