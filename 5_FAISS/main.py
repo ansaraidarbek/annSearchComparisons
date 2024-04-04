@@ -20,7 +20,7 @@ def faiss_run (name, metric, runs, queries, method) :
             time_end = perf_counter()
             totalTime = (time_end - time_start)
             return (index, totalTime)
-        M = 28  # Number of subquantizers (bits per vector)
+        M = 16  # Number of subquantizers (bits per vector)
         nbits = 7 # Total number of bits for the PQ code
         time_start = perf_counter()
         index = indexMethod(d, M, nbits, faiss.METRIC_L2)
@@ -66,5 +66,6 @@ def faiss_run (name, metric, runs, queries, method) :
     R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
     R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
     R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
+    R_norm = calculateNormRecall(indexes, trueIndexes, True)
     print("FAISS end ----------------------------------------------")
-    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]
+    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], minBuildTime + minSearchTime, R_0, R_01, R_02, R_norm]

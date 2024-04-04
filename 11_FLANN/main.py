@@ -51,5 +51,6 @@ def scipy_run (name, metric, runs, queries) :
     R_0 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1, True)
     R_01 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.01, True)
     R_02 = calculateRecallAverage(indexes, distances, trueIndexes, trueDistances, 1.1, True)
+    R_norm = calculateNormRecall(indexes, trueIndexes, True)
     print("FLANN end ----------------------------------------------")
-    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], R_0, R_01, R_02]
+    return [[minBuildTime, maxBuildTime], [minSearchTime, maxSearchTime], minBuildTime + minSearchTime, R_0, R_01, R_02, R_norm]

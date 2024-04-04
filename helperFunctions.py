@@ -153,12 +153,10 @@ def createIndexNumerous(function, indexingMethod, dataset, runs) :
 
 def calculateNormRecall(indexes, trueIndexes, show = False):
     average = 0
-    prev = 0
     for i in range(indexes.shape[0]):
         for j in range(indexes.shape[1]):
             if (indexes[i][j] in trueIndexes[i]):
-                average+=1
-        prev = average   
+                average+=1 
     average/=(indexes.shape[0] * indexes.shape[1])
     if (not show):
         msg = 'norm Recall is ' + str(np.round(average, 4))
