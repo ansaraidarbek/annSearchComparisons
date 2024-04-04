@@ -18,7 +18,7 @@ exec(open(fullPath + "/10_NGT/main.py").read())
 
 naming = ['fashionMnist-784', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 problematic = ['deepImage-96', 'gist-960']
-methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_pq', 'nmslib', 'ngt']
+methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'nmslib', 'ngt']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 results = []
 metric = 'euclidean'
@@ -45,9 +45,9 @@ for name in naming:
     faissHnsw = faiss_run(name, metric, runs, queries, 'hnsw')
     print(faissHnsw)
     result.append(faissHnsw)
-    faissPQ = faiss_run(name, metric, runs, queries, 'pq')
-    print(faissPQ)
-    result.append(faissPQ)
+    # faissPQ = faiss_run(name, metric, runs, queries, 'pq')
+    # print(faissPQ)
+    # result.append(faissPQ)
     # pyNNDescent = pynndescent_run(name, metric, runs, queries)
     # print(pyNNDescent)
     # result.append(pyNNDescent)
