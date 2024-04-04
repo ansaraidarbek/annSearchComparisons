@@ -12,7 +12,7 @@ def mrpt_run (name, metric, runs, queries) :
     def createIndex(indexMethod, datasetImages):
         time_start = perf_counter()
         index = indexMethod(datasetImages)
-        index.build_autotune_sample(0.8, 100)
+        index.build_autotune_sample(0.9, 100)
         time_end = perf_counter()
         totalTime = (time_end - time_start)
         return (index, totalTime)

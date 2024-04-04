@@ -16,7 +16,7 @@ exec(open(fullPath + "/5_FAISS/main.py").read())
 exec(open(fullPath + "/9_NMSLIB/main.py").read())
 exec(open(fullPath + "/10_NGT/main.py").read())
 
-naming = ['mnist-784', 'fashionMnist-784']
+naming = ['fashionMnist-784', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']
 problematic = ['deepImage-96', 'gist-960']
 methods = ['annoy', 'sclearn_ballTree', 'sclearn_kdTree', 'mrpt', 'hnswlib', 'faiss_hnsw', 'faiss_pq', 'nmslib', 'ngt']
 datasets_list = ['deepImage-96', 'fashionMnist-784', 'gist-960', 'glove-25', 'glove-50', 'glove-100', 'glove-200', 'mnist-784', 'nytimes-256', 'sift-128', 'lastfm-64']

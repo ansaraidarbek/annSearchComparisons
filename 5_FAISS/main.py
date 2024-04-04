@@ -20,7 +20,11 @@ def faiss_run (name, metric, runs, queries, method) :
             time_end = perf_counter()
             totalTime = (time_end - time_start)
             return (index, totalTime)
-        M = 28  # Number of subquantizers (bits per vector)
+        bits = [28, 5, 16]
+        M = 8 # Number of subquantizers (bits per vector)
+        for i in bits:
+            if (d % i == 0) :
+                M = i
         nbits = 7 # Total number of bits for the PQ code
         time_start = perf_counter()
         index = indexMethod(d, M, nbits, faiss.METRIC_L2)
